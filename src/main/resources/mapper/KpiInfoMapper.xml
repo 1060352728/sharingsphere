@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace：命名空间，用来映射对应的mapper
+相当于将mapper和mapper.xml连接起来，这一步很重要-->
+<mapper namespace="com.lk.sharding_sphere.mapper.KpiInfoMapper">
+
+    <insert id="insertKpiInfo" parameterType="com.lk.sharding_sphere.entity.KpiInfo">
+        insert into kpi_info(task_id, ne_id, mu_id, mc_id, period, time, value)
+        values
+        (#{taskId},#{neId},#{muId},#{mcId},#{period},#{time},#{value})
+
+    </insert>
+
+    <insert id="insertKpiInfos" parameterType="java.util.List">
+        insert into kpi_info(task_id, ne_id, mu_id, mc_id, period, time, value)
+        values
+        <foreach collection="kpiInfos" item="item" index="index" separator=",">
+            (#{item.taskId},#{item.neId},#{item.muId},#{item.mcId},#{item.period},#{item.time},#{item.value})
+        </foreach>
+    </insert>
+
+</mapper>

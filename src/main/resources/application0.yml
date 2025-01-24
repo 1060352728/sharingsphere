@@ -1,0 +1,44 @@
+server:
+  port: 8081
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    enabled: true
+    props:
+      sql-show: true
+    datasource:
+      names: db0,db1
+      db0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.234.137:3306/testdb01
+        username: root
+        password: 123456
+      db1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.234.138:3306/testdb02
+        username: root
+        password: 123456
+    sharding:
+      tables:
+        kpi_info:
+          actual-data-nodes: db$->{0..1}.kpi_info_$->{0..1}
+          database-strategy:
+            inline:
+              sharding-column: task_id
+              algorithm-expression: db$->{task_id%2}
+          table-strategy:
+            inline:
+              sharding-column: ne_id
+              algorithm-expression: kpi_info_$->{ne_id%2}
+          key-generator:
+            column: id
+            type: snowflake
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.lk.sharding_sphere.entity
+  configuration:
+    map-underscore-to-camel-case: true
